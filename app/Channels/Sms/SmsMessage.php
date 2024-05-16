@@ -62,17 +62,24 @@ class SmsMessage
 	 *
 	 * @return void|bool
 	 */
-	public function send(): void
+	public function send(): bool
 	{
 		$sms = SendSmsBag::withMessage($this->to, $this->message);
 		$sms->encoding = 'utf-8';
 
-		$res = (new SmsapiHttpClient())
-			->smsapiPlService($this->api_token)
-			->smsFeature()
-			->sendSms($sms);
+		try {
+			$res = (new SmsapiHttpClient())
+				->smsapiPlService($this->api_token)
+				->smsFeature()
+				->sendSms($sms);
 
-		$this->log($res);
+			$this->log($res);
+			return true;
+		} catch (\Exception $e) {
+			report($e);
+			$this->log($sms, 'SmsSendError');
+			return false;
+		}
 	}
 
 	/**

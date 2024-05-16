@@ -32,8 +32,12 @@ class SmsChannel
 			return; // Send from another channel
 		}
 
-		$message->from($id)->send();
+		$status = $message->from($id)->send();
 
-		return true;
+		if ($status == true) {
+			return true;
+		}
+
+		return;
 	}
 }

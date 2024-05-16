@@ -5,7 +5,7 @@ use App\Notifications\OrderSms;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 
-// Main page
+// Smsapi
 Route::get('/sms', function () {
 	try {
 		Notification::sendNow(
