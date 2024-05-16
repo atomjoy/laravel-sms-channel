@@ -85,7 +85,7 @@ class SmsMessage
 	/**
 	 * Log to file.
 	 */
-	function log($data, $msg = 'SmsBagSent'): void
+	function log($data, $msg = 'SmsSent'): void
 	{
 		Log::build([
 			'driver' => 'single',

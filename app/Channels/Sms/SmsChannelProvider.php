@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Notification;
 
 //
 /**
- * Sms channel provider class
+ * Sms channel provider class.
  *
- * (optional) Add in bootstrap/providers.php if you want use 'sms' nor SmsChannel::class in via() method.
+ * Add SmsChannelProvider in bootstrap/providers.php
+ * if you want to use "sms" and not SmsChannel::class
+ * in the notification via() method (optional).
  */
 class SmsChannelProvider extends ServiceProvider
 {

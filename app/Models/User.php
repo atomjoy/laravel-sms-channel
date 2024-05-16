@@ -15,6 +15,6 @@ class User extends Authenticatable
 	// Set database notifications type
 	public function routeNotificationForSms($notifiable)
 	{
-		return 'sms-channel-user-' . $this->id;
+		return 'user-' . $this->id;
 	}
 }

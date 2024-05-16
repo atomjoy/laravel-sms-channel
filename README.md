@@ -1,5 +1,8 @@
 # Laravel smsapi channel
 
+- v1.0 Throws exception when SMS smsapi error
+- v2.0 Forwards the SMS message to the database
+
 ## Install
 
 ```sh
@@ -25,10 +28,10 @@ class User extends Authenticatable
 
     // ...
 
-    // Set database notifications channel type name
+    // Overwrite notification message user id
     public function routeNotificationForSms($notifiable)
     {
-        return 'sms-channel-' . $this->id;
+        return 'user-' . $this->id;
     }
 }
 ```
@@ -58,4 +61,38 @@ Route::get('/sms', function () {
     return 'Sms has been send.';
 
 });
+```
+
+## Service Provider (optional)
+
+Add SmsChannelProvider in bootstrap/providers.php if you want to use "sms" and not SmsChannel::class in the notification via() method.
+
+```php
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    App\Channels\Sms\SmsChannelProvider::class,
+];
+```
+
+## Notifications list
+
+```php
+<?php
+
+return $user->notifications()->get();
+
+return $user->notifications()->latest()->limit(5)->get();
+
+return $user->notifications()->latest()
+    ->offset($offset)->limit($perpage)
+    ->get()->each(function ($n) {
+        $n->formatted_created_at = $n->created_at->format('Y-m-d H:i:s');
+    });
+
+return $user->notifications()
+    ->where('type', 'sms-channel')
+    ->orderBy('created_at', 'desc')
+    ->limit(5)->get();
 ```

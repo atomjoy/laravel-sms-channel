@@ -62,9 +62,9 @@ class OrderSms extends Notification
 		$mobile = $this->mobile ?? $notifiable?->mobile ?? '';
 
 		return [
-			'from' => 'sms-channel-' . $notifiable->id,
-			'sms_number' => $mobile,
-			'sms_message' => $this->message,
+			'id' => $notifiable->id,
+			'mobile' => $mobile,
+			'message' => $this->message,
 		];
 	}
 }
