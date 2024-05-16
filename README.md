@@ -1,4 +1,4 @@
-# Laravel smsapi channel
+# Laravel smsapi notification channel
 
 - v1.0 Throws exception when SMS smsapi error
 - v2.0 Forwards the SMS message to the database
