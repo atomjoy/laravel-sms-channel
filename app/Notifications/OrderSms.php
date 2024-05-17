@@ -3,11 +3,12 @@
 namespace App\Notifications;
 
 use App\Channels\Sms\SmsChannel;
-use App\Channels\Sms\SmsMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Smsapi\Client\Feature\Sms\Bag\SendSmsBag;
+use Smsapi\Client\Feature\Sms\Bag\SendSmssBag;
 
 class OrderSms extends Notification
 {
@@ -45,11 +46,11 @@ class OrderSms extends Notification
 	 *
 	 * @return App\Channels\Sms\SmsMessage
 	 */
-	public function toSms($notifiable): SmsMessage
+	public function toSms($notifiable): SendSmsBag|SendSmssBag
 	{
 		$mobile = $this->mobile ?? $notifiable?->mobile ?? '';
 
-		return (new SmsMessage($mobile, $this->message));
+		return SendSmssBag::withMessage([$mobile], $this->message);
 	}
 
 	/**

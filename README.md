@@ -1,7 +1,8 @@
 # Laravel smsapi notification channel
 
+- v3.0 Catch exceptions to logs (SendSmssBag class from SmsApi)
+- v2.0 Catch exceptions to logs (SmsMessage class)
 - v1.0 Throws exception when SMS smsapi error
-- v2.0 Forwards the SMS message to the database
 
 ## Install
 
@@ -9,34 +10,7 @@
 composer require smsapi/php-client
 ```
 
-## Update User model
-
-```php
-<?php
-
-namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Notification;
-
-class User extends Authenticatable
-{
-    use HasFactory, Notifiable;
-
-    // ...
-
-    // Overwrite notification message user id
-    public function routeNotificationForSms($notifiable)
-    {
-        return 'user-' . $this->id;
-    }
-}
-```
-
-## Add route
+### Add route
 
 ```php
 <?php
@@ -63,7 +37,34 @@ Route::get('/sms', function () {
 });
 ```
 
-## Service Provider (optional)
+### Config SmsApi
+
+config/sms.php
+
+```php
+<?php
+
+return [
+    'api_token' => 'EMPTY_API_TOKEN', // Api bearer token
+    'api_from' => 'Test', // Default sms sender name
+    'api_encoding' => 'utf-8',  // Charset
+    'api_details' => true,  // Test mode
+    'api_test' => false,  // Test mode
+];
+```
+
+### Run server /sms url
+
+```sh
+php artisan serve --host=localhost
+php artisan serve --host=localhost --port=8080
+```
+
+## Dev
+
+Optional part for the SmsMessage class (not used in this version).
+
+### Service Provider
 
 Add SmsChannelProvider in bootstrap/providers.php if you want to use "sms" and not SmsChannel::class in the notification via() method.
 
@@ -76,7 +77,34 @@ return [
 ];
 ```
 
-## Notifications list
+### Update User model (optional)
+
+```php
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Notification;
+
+class User extends Authenticatable
+{
+    use HasFactory, Notifiable;
+
+    // ...
+
+    // Overwrite notification message user id
+    public function routeNotificationForSms($notifiable)
+    {
+        return 'user-' . $this->id;
+    }
+}
+```
+
+### Notifications list
 
 ```php
 <?php

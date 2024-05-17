@@ -3,10 +3,17 @@
 namespace App\Channels\Sms;
 
 use Illuminate\Notifications\Notification;
-use App\Channels\Sms\SmsMessage;
+use Illuminate\Support\Facades\Log;
+use Smsapi\Client\Curl\SmsapiHttpClient;
+use Smsapi\Client\Feature\Sms\Bag\SendSmsBag;
+use Smsapi\Client\Feature\Sms\Bag\SendSmssBag;
 
-// Install
-// composer require smsapi/php-client
+/**
+ * SmsChannel class
+ *
+ * Install:
+ * composer require smsapi/php-client
+ */
 class SmsChannel
 {
 	/**
@@ -18,26 +25,50 @@ class SmsChannel
 	 */
 	public function send($notifiable, Notification $notification)
 	{
-		if (method_exists($notifiable, 'routeNotificationForSms')) {
-			$id = $notifiable->routeNotificationForSms($notifiable);
-		} else {
-			$id = $notifiable->getKey();
-		}
-
-		$message = method_exists($notification, 'toSms')
+		$sms = method_exists($notification, 'toSms')
 			? $notification->toSms($notifiable)
 			: '';
 
-		if (!$message instanceof SmsMessage) {
-			return; // Send from another channel
+		if (
+			!$sms instanceof SendSmsBag &&
+			!$sms instanceof SendSmssBag
+		) {
+			return;
 		}
 
-		$status = $message->from($id)->send();
-
-		if ($status == true) {
-			return true;
+		$sms->from = config('sms.api_from', 'Test');
+		$sms->encoding = config('sms.api_from', 'utf-8');
+		$sms->details = config('sms.api_details', true);
+		if (config('sms.api_test', false)) {
+			$sms->test = 1;
 		}
 
-		return;
+		try {
+			$res = (new SmsapiHttpClient())
+				->smsapiPlService(config('sms.api_token', 'EMPTY_API_TOKEN'))
+				->smsFeature()->sendSmss($sms);
+
+			$this->log($res, 'SmsSent');
+
+			return $res;
+		} catch (\Exception $e) {
+			report($e);
+			$this->log($sms, 'SmsError');
+		}
+	}
+
+	/**
+	 * Log to file
+	 *
+	 * @param mixed $data
+	 * @param string $msg
+	 * @return void
+	 */
+	function log($data, $msg = 'SmsSent'): void
+	{
+		Log::build([
+			'driver' => 'single',
+			'path' => storage_path('logs/sms.log'),
+		])->info($msg, array('sms' => $data));
 	}
 }

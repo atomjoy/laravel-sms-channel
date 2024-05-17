@@ -6,18 +6,25 @@ use Illuminate\Support\Facades\Log;
 use Smsapi\Client\Curl\SmsapiHttpClient;
 use Smsapi\Client\Feature\Sms\Bag\SendSmsBag;
 
+/**
+ * SmsMessage class
+ *
+ * Custom sms message class for sending.
+ */
 class SmsMessage
 {
 	protected $to;
 	protected $message;
+	protected $from = null;
 	protected $api_token;
 	protected $api_from;
-	protected $from = null;
+	protected bool $api_test = false;
 
 	public function __construct($mobile, $message)
 	{
 		$this->api_token = config('sms.api_token', '');
 		$this->api_from = config('sms.api_from', 'Test');
+		$this->api_test = (bool) config('sms.api_test', false);
 
 		$this->to($mobile);
 		$this->message($message);
@@ -62,10 +69,14 @@ class SmsMessage
 	 *
 	 * @return void|bool
 	 */
-	public function send(): bool
+	public function send()
 	{
 		$sms = SendSmsBag::withMessage($this->to, $this->message);
 		$sms->encoding = 'utf-8';
+
+		if ($this->api_test) {
+			$sms->test = 1;
+		}
 
 		try {
 			$res = (new SmsapiHttpClient())
@@ -74,11 +85,9 @@ class SmsMessage
 				->sendSms($sms);
 
 			$this->log($res);
-			return true;
 		} catch (\Exception $e) {
 			report($e);
 			$this->log($sms, 'SmsSendError');
-			return false;
 		}
 	}
 
