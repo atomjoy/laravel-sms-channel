@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Log;
 use Smsapi\Client\Curl\SmsapiHttpClient;
 use Smsapi\Client\Feature\Sms\Bag\SendSmsBag;
 
-/**
- * SmsMessage class
- *
- * Custom sms message class for sending.
- */
 class SmsMessage
 {
 	protected $to;

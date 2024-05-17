@@ -16,7 +16,7 @@ class OrderSms extends Notification
 
 	public function __construct(
 		public string $message = '',
-		public $mobile = null,
+		public array $mobile = [],
 	) {
 		$this->afterCommit();
 	}
@@ -50,7 +50,7 @@ class OrderSms extends Notification
 	{
 		$mobile = $this->mobile ?? $notifiable?->mobile ?? '';
 
-		return SendSmssBag::withMessage([$mobile], $this->message);
+		return SendSmssBag::withMessage([...$mobile], $this->message);
 	}
 
 	/**

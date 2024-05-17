@@ -12,17 +12,17 @@ Route::get('/sms', function () {
 		$user->notify(
 			new OrderSms(
 				'New Order [%idzdo:smsapi.pl/panel%]',
-				'48100100100'
+				['48100100100']
 			)
 		);
 
-		// Notification::sendNow(
-		// 	$user,
-		// 	new OrderSms(
-		// 		'New Order [%idzdo:smsapi.pl/panel%]',
-		// 		'48100100100'
-		// 	)
-		// );
+		Notification::sendNow(
+			$user,
+			new OrderSms(
+				'New Order [%idzdo:smsapi.pl/panel%]',
+				['48100100100']
+			)
+		);
 	} catch (\Exception $e) {
 		// Resend from another channel if error
 		return $e->getMessage();
