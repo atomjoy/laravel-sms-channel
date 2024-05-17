@@ -37,7 +37,7 @@ class SmsChannel
 		}
 
 		$sms->from = config('sms.api_from', 'Test');
-		$sms->encoding = config('sms.api_from', 'utf-8');
+		$sms->encoding = config('sms.api_encoding', 'utf-8');
 		$sms->details = config('sms.api_details', true);
 		if (config('sms.api_test', false)) {
 			$sms->test = 1;
