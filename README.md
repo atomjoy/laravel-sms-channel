@@ -25,7 +25,7 @@ Route::get('/sms', function () {
     try {
         Notification::sendNow(
             User::first(),
-            new OrderSms('New Order [%idzdo:smsapi.pl/panel%]', '48100100100')
+            new OrderSms('New Order [%idzdo:smsapi.pl/panel%]', ['48100100100'])
         );
     } catch (\Exception $e) {
         // Resend from another channel if error
