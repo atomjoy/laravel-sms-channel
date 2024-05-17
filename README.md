@@ -1,4 +1,4 @@
-# Laravel smsapi notification channel
+# Laravel smsapi notification channel (tutorial)
 
 - v3.0 Catch exceptions to logs (SendSmssBag class from SmsApi)
 - v2.0 Catch exceptions to logs (SmsMessage class)
